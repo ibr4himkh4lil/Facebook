@@ -1,5 +1,3 @@
-
-```markdown
 # Facebook UI Clone — Frontend + Backend (Educational / Security Research)
 
 > **⚠️ WARNING: Educational & Research Use Only**  
