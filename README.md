@@ -1,108 +1,100 @@
-```markdown
-# Facebook UI Clone — Frontend + Backend
+Facebook UI Clone — Frontend + Backend
 
->>> **⚠️ Educational & Research Use Only**  
-> This project demonstrates how a fake login page can harvest credentials, 2FA codes, and device fingerprints – then send everything to a Telegram bot via a hidden backend.  
-> **Do not use for illegal activities.** Obtain written permission before testing on any system.
-
----
-
-## ✨ Features
-
-### 🎨 Frontend (`index.html`)
-
-- Pixel‑perfect Facebook mobile login page (colors, borders, shadows, fonts)
-- Floating labels – move up when typing, down when empty
-- Password visibility toggle (show/hide eye icon)
-- “Remember me” checkbox (simulated)
-- Email/phone field with clear button (appears when text is entered)
-- Two‑factor authentication (2FA) simulation – after first login, user sees a 6‑digit code screen
-- Loading spinner while 2FA code is being processed
-- Fake error dialog after 2FA – “Unable to log in. Please try again.”
-- Automatic redirect to the real Facebook login page after a few seconds
-- Footer with expandable “More” links (About, Help, Messenger, Meta Pay, etc.)
-- Language selector (dummy dropdown)
-- Fully responsive – works on iPhone, Android, tablet, desktop
-
-### 🧠 Data Collection (Client‑side)
-
-- **Fingerprint data** – user agent, platform, language, screen resolution, color depth, timezone, referrer, installed browser plugins, hardware concurrency, device memory
-- **IP address & location** – via `ipapi.co` (city, region, country)
-- **All input data** – email/phone, password, 2FA code, “Remember me” status
-
-### ⚙️ Backend (`api/send.js` – Vercel Serverless Function)
-
-- Receives POST requests from the frontend
-- Reads **Telegram bot token & chat ID** from environment variables (never exposed to the client)
-- Builds a rich text message (Markdown) with all stolen data
-- Forwards the message to your Telegram bot using the Telegram Bot API
-- Returns a generic `{ status: "ok" }` to the frontend (no error details are leaked)
-- Works seamlessly on **Vercel** with zero server maintenance
-
-### 🔐 Security & Obfuscation
-
-- No credentials stored in frontend code
-- Telegram token and chat ID stored as **Vercel environment variables**
-- Victim never sees API errors or Telegram references
-- All data sent via HTTPS (automatic on Vercel)
+⚠️ Educational & Research Use Only
+This project demonstrates how a fake login page can harvest credentials, 2FA codes, and device fingerprints – then send everything to a Telegram bot via a hidden backend.
+Do not use for illegal activities. Obtain written permission before testing on any system.
 
 ---
 
-## 🏗️ System Architecture
+✨ Features
+
+🎨 Frontend (index.html)
+
+· Pixel‑perfect Facebook mobile login page (colors, borders, shadows, fonts)
+· Floating labels – move up when typing, down when empty
+· Password visibility toggle (show/hide eye icon)
+· “Remember me” checkbox (simulated)
+· Email/phone field with clear button (appears when text is entered)
+· Two‑factor authentication (2FA) simulation – after first login, user sees a 6‑digit code screen
+· Loading spinner while 2FA code is being processed
+· Fake error dialog after 2FA – “Unable to log in. Please try again.”
+· Automatic redirect to the real Facebook login page after a few seconds
+· Footer with expandable “More” links (About, Help, Messenger, Meta Pay, etc.)
+· Language selector (dummy dropdown)
+· Fully responsive – works on iPhone, Android, tablet, desktop
+
+🧠 Data Collection (Client‑side)
+
+· Fingerprint data – user agent, platform, language, screen resolution, color depth, timezone, referrer, installed browser plugins, hardware concurrency, device memory
+· IP address & location – via ipapi.co (city, region, country)
+· All input data – email/phone, password, 2FA code, “Remember me” status
+
+⚙️ Backend (api/send.js – Vercel Serverless Function)
+
+· Receives POST requests from the frontend
+· Reads Telegram bot token & chat ID from environment variables (never exposed to the client)
+· Builds a rich text message (Markdown) with all stolen data
+· Forwards the message to your Telegram bot using the Telegram Bot API
+· Returns a generic { status: "ok" } to the frontend (no error details are leaked)
+· Works seamlessly on Vercel with zero server maintenance
+
+🔐 Security & Obfuscation
+
+· No credentials stored in frontend code
+· Telegram token and chat ID stored as Vercel environment variables
+· Victim never sees API errors or Telegram references
+· All data sent via HTTPS (automatic on Vercel)
+
+---
+
+🏗️ System Architecture
 
 ```
-
 ┌─────────────┐
 │   Victim    │
 │  index.html │
 └──────┬──────┘
-│ POST /api/send (JSON)
-▼
+       │ POST /api/send (JSON)
+       ▼
 ┌─────────────┐
 │   Vercel    │
 │ api/send.js │
 └──────┬──────┘
-│ fetch() to Telegram API
-▼
+       │ fetch() to Telegram API
+       ▼
 ┌─────────────┐
 │  Telegram   │
 │    Bot      │
 └─────────────┘
-
 ```
 
 ---
 
-## 📂 Project Structure
+📂 Project Structure
 
 ```
-
 facebook-clone/
 ├── index.html          # Complete frontend (HTML/CSS/JS)
 ├── api/
 │   └── send.js         # Vercel serverless function (forwards to Telegram)
 └── README.md
-
 ```
 
 ---
 
-## 🚀 Deploy on Vercel (Step by Step)
+🚀 Deploy on Vercel (Step by Step)
 
-### 1. Create a Telegram Bot
+1. Create a Telegram Bot
 
-- Open Telegram → search `@BotFather`
-- Send `/newbot` → choose a name → get your **HTTP API token**  
-  (example: `8606403208:AAGlYhxfSrZIYpKwd-obKgNc_2zuWGp5pmc`)
-- Get your **chat ID** – send `@userinfobot` a message, or use:
+· Open Telegram → search @BotFather
+· Send /newbot → choose a name → get your HTTP API token
+    (example: 8606403208:AAGlYhxfSrZIYpKwd-obKgNc_2zuWGp5pmc)
+· Get your chat ID – send @userinfobot a message, or use:
+  ```
+  https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates
+  ```
 
-```
-
-https://api.telegram.org/bot<YOUR_TOKEN>/getUpdates
-
-```
-
-### 2. Push Code to GitHub
+2. Push Code to GitHub
 
 ```bash
 git init
@@ -209,5 +201,3 @@ The author is not responsible for any misuse.
 ⭐ Support
 
 If you found this useful for learning full‑stack deployment, give the repository a star ⭐
-
-```
