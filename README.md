@@ -1,7 +1,7 @@
 ```markdown
 # Facebook UI Clone — Frontend + Backend
 
-> **⚠️ Educational & Research Use Only**  
+>>> **⚠️ Educational & Research Use Only**  
 > This project demonstrates how a fake login page can harvest credentials, 2FA codes, and device fingerprints – then send everything to a Telegram bot via a hidden backend.  
 > **Do not use for illegal activities.** Obtain written permission before testing on any system.
 
