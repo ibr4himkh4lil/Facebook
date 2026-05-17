@@ -14,8 +14,8 @@ export default async function handler(req, res) {
   }
   
   // Get Telegram credentials from environment variables (set in Vercel dashboard)
-  const botToken = process.env.8606403208:AAGlYhxfSrZIYpKwd-obKgNc_2zuWGp5pmc;
-  const chatId = process.env.5522678104;
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
   
   if (!botToken || !chatId) {
     console.error('Telegram credentials not configured in environment');
@@ -62,4 +62,4 @@ export default async function handler(req, res) {
   
   // Always return a generic success response (do not reveal any error to the frontend)
   res.status(200).json({ status: 'ok' });
-    }
+}
